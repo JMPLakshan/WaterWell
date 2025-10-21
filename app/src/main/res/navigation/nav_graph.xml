@@ -4,13 +4,14 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/habitsFragment">
 
+    <!-- 🧩 Habits -->
     <fragment
         android:id="@+id/habitsFragment"
         android:name="com.example.waterwell.ui.habits.HabitsFragment"
         android:label="Habits">
         <action
             android:id="@+id/action_habitsFragment_to_editHabitFragment"
-            app:destination="@id/editHabitFragment"/>
+            app:destination="@id/editHabitFragment" />
     </fragment>
 
     <fragment
@@ -18,13 +19,14 @@
         android:name="com.example.waterwell.ui.habits.EditHabitFragment"
         android:label="Edit Habit" />
 
+    <!-- 😊 Mood -->
     <fragment
         android:id="@+id/moodFragment"
         android:name="com.example.waterwell.ui.mood.MoodFragment"
         android:label="Mood">
         <action
             android:id="@+id/action_moodFragment_to_addMoodFragment"
-            app:destination="@id/addMoodFragment"/>
+            app:destination="@id/addMoodFragment" />
     </fragment>
 
     <fragment
@@ -32,13 +34,21 @@
         android:name="com.example.waterwell.ui.mood.AddMoodFragment"
         android:label="Add Mood" />
 
+    <!-- 📈 Mood Chart -->
     <fragment
         android:id="@+id/moodChartFragment"
         android:name="com.example.waterwell.ui.charts.MoodChartFragment"
         android:label="Weekly Trend" />
 
+    <!-- ⚙️ Settings -->
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.waterwell.ui.settings.SettingsFragment"
         android:label="Settings" />
+
+    <!-- 💧 NEW: Habit Completion Chart -->
+    <fragment
+        android:id="@+id/chartFragment"
+        android:name="com.example.waterwell.ui.charts.ChartFragment"
+        android:label="Chart" />
 </navigation>

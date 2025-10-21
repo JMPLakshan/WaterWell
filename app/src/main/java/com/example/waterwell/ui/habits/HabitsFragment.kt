@@ -13,6 +13,7 @@ import com.example.waterwell.data.repository.HabitRepository
 import com.example.waterwell.databinding.FragmentHabitsBinding
 import com.example.waterwell.util.DateUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class HabitsFragment : Fragment() {
 
@@ -28,7 +29,6 @@ class HabitsFragment : Fragment() {
         _binding = FragmentHabitsBinding.inflate(inflater, container, false)
         repo = HabitRepository(requireContext())
 
-        // 🔄 Reset daily completion flags at midnight
         val prefs = Prefs(requireContext())
         val today = DateUtils.todayKey()
         if (prefs.getLastResetDay() != today) {
@@ -36,11 +36,21 @@ class HabitsFragment : Fragment() {
             prefs.setLastResetDay(today)
         }
 
-        // 🔧 Setup RecyclerView and Adapter
+        setupRecycler()
+        binding.fabAdd.setOnClickListener { showCreateHabitDialog() }
+
+        if (repo.all().isEmpty()) showQuickSetupDialog()
+
+        updateEmpty()
+        return binding.root
+    }
+
+    private fun setupRecycler() {
         adapter = HabitAdapter(
             repo.all(),
             onToggle = { id, done ->
                 repo.toggle(id, done)
+                adapter.refresh(repo.all())
                 updateEmpty()
             },
             onEdit = { habit ->
@@ -51,56 +61,42 @@ class HabitsFragment : Fragment() {
                 }
             },
             onDelete = { habit ->
-                DeleteHabitDialog.show(requireContext(), habit) {
-                    repo.remove(habit.id)
-                    adapter.refresh(repo.all())
-                    updateEmpty()
-                }
-            }
-        )
-
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-        binding.recycler.adapter = adapter
-
-        // ➕ Add new habit (manual Drink Water or custom)
-        binding.fabAdd.setOnClickListener {
-            CreateHabitDialog.show(requireContext()) { newHabit ->
-                repo.add(newHabit)
+                repo.remove(habit.id)
                 adapter.refresh(repo.all())
                 updateEmpty()
+                Snackbar.make(binding.root, "Habit deleted", Snackbar.LENGTH_LONG)
+                    .setAction("Undo") {
+                        repo.add(habit)
+                        adapter.refresh(repo.all())
+                        updateEmpty()
+                    }.show()
             }
-        }
-
-        // 📦 Quick setup for new users
-        if (repo.all().isEmpty()) {
-            showQuickSetupDialog()
-        }
-
-        updateEmpty()
-        return binding.root
+        )
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.recycler.adapter = adapter
     }
 
-    private fun updateEmpty() {
-        binding.empty.isVisible = adapter.current.isEmpty()
+    private fun showCreateHabitDialog() {
+        CreateHabitDialog.show(requireContext()) { newHabit ->
+            repo.add(newHabit)
+            adapter.refresh(repo.all())
+            updateEmpty()
+            Snackbar.make(binding.root, "Habit added", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun showQuickSetupDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Quick Setup")
-            .setMessage("Would you like to add some default wellness habits to get started?")
-            .setPositiveButton("Add Water Habits") { _, _ ->
-                addDefaultWaterHabits()
-            }
-            .setNeutralButton("Add All Habits") { _, _ ->
-                addAllDefaultHabits()
-            }
+            .setMessage("Would you like to add some default wellness habits?")
+            .setPositiveButton("Add Water Habits") { _, _ -> addDefaultWaterHabits() }
+            .setNeutralButton("Add All Habits") { _, _ -> addAllDefaultHabits() }
             .setNegativeButton("Skip", null)
             .show()
     }
 
     private fun addDefaultWaterHabits() {
-        val defaults = DefaultHabits.getDefaultWaterHabits()
-        defaults.forEach { repo.add(it) }
+        DefaultHabits.getDefaultWaterHabits().forEach { repo.add(it) }
         adapter.refresh(repo.all())
         updateEmpty()
     }
@@ -110,6 +106,10 @@ class HabitsFragment : Fragment() {
         all.forEach { repo.add(it) }
         adapter.refresh(repo.all())
         updateEmpty()
+    }
+
+    private fun updateEmpty() {
+        binding.empty.isVisible = adapter.current.isEmpty()
     }
 
     override fun onDestroyView() {
