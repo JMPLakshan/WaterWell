@@ -16,9 +16,7 @@
     <fragment
         android:id="@+id/editHabitFragment"
         android:name="com.example.waterwell.ui.habits.EditHabitFragment"
-        android:label="Edit Habit"
-        android:enterAnim="@android:anim/fade_in"
-        android:exitAnim="@android:anim/fade_out" />
+        android:label="Edit Habit" />
 
     <fragment
         android:id="@+id/moodFragment"
@@ -32,9 +30,7 @@
     <fragment
         android:id="@+id/addMoodFragment"
         android:name="com.example.waterwell.ui.mood.AddMoodFragment"
-        android:label="Add Mood"
-        android:enterAnim="@android:anim/slide_in_left"
-        android:exitAnim="@android:anim/slide_out_right" />
+        android:label="Add Mood" />
 
     <fragment
         android:id="@+id/moodChartFragment"

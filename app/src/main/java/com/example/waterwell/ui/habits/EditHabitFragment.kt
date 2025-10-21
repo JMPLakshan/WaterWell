@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.waterwell.data.models.Habit
 import com.example.waterwell.data.repository.HabitRepository
 import com.example.waterwell.databinding.DialogEditHabitBinding
-import kotlinx.parcelize.Parcelize
+import kotlinx.android.parcel.Parcelize
 
 class EditHabitFragment : Fragment() {
     companion object {
