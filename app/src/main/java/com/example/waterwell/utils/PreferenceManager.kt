@@ -27,4 +27,8 @@ class PreferenceManager(context: Context) {
     fun setOnboardingCompleted() {
         prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, true).apply()
     }
+    
+    fun resetOnboarding() {
+        prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, false).apply()
+    }
 }

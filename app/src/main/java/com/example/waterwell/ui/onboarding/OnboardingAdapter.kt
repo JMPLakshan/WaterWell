@@ -12,6 +12,7 @@ class OnboardingAdapter(private val items: List<OnboardingItem>) :
     RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>() {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingViewHolder {
+        android.util.Log.d("OnboardingAdapter", "Creating view holder")
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_onboarding_screen, parent, false)
         return OnboardingViewHolder(view)

@@ -43,6 +43,9 @@ class OnboardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboarding)
         
+        // Debug logging
+        android.util.Log.d("OnboardingActivity", "OnboardingActivity created")
+        
         // Hide action bar
         supportActionBar?.hide()
         

@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.waterwell.data.Prefs
 import com.example.waterwell.data.models.Habit
 import com.example.waterwell.data.repository.HabitRepository
 import com.example.waterwell.databinding.FragmentHabitsBinding
 import com.example.waterwell.util.DateUtils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class HabitsFragment : Fragment() {
 
@@ -24,11 +22,13 @@ class HabitsFragment : Fragment() {
     private lateinit var repo: HabitRepository
     private lateinit var adapter: HabitAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHabitsBinding.inflate(inflater, container, false)
         repo = HabitRepository(requireContext())
 
-        // midnight reset (simple check on open)
+        // 🔄 Reset daily completion flags at midnight
         val prefs = Prefs(requireContext())
         val today = DateUtils.todayKey()
         if (prefs.getLastResetDay() != today) {
@@ -36,32 +36,44 @@ class HabitsFragment : Fragment() {
             prefs.setLastResetDay(today)
         }
 
-        adapter = HabitAdapter(repo.all(),
-            onToggle = { id, done -> repo.toggle(id, done); updateEmpty() },
+        // 🔧 Setup RecyclerView and Adapter
+        adapter = HabitAdapter(
+            repo.all(),
+            onToggle = { id, done ->
+                repo.toggle(id, done)
+                updateEmpty()
+            },
             onEdit = { habit ->
-                val action = com.example.waterwell.R.id.action_habitsFragment_to_editHabitFragment
-                findNavController().navigate(action, EditHabitFragment.bundleFor(habit))
-            })
+                EditHabitDialog.show(requireContext(), habit) { updated ->
+                    repo.update(updated)
+                    adapter.refresh(repo.all())
+                    updateEmpty()
+                }
+            },
+            onDelete = { habit ->
+                DeleteHabitDialog.show(requireContext(), habit) {
+                    repo.remove(habit.id)
+                    adapter.refresh(repo.all())
+                    updateEmpty()
+                }
+            }
+        )
 
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         binding.recycler.adapter = adapter
 
-        // Swipe to delete
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
-            override fun onSwiped(vh: RecyclerView.ViewHolder, dir: Int) {
-                val item = adapter.current[vh.bindingAdapterPosition]
-                repo.remove(item.id)
+        // ➕ Add new habit (manual Drink Water or custom)
+        binding.fabAdd.setOnClickListener {
+            CreateHabitDialog.show(requireContext()) { newHabit ->
+                repo.add(newHabit)
                 adapter.refresh(repo.all())
                 updateEmpty()
             }
-        }).attachToRecyclerView(binding.recycler)
+        }
 
-        binding.fabAdd.setOnClickListener {
-            EditHabitFragment.newDialog(requireContext()) { title, desc ->
-                repo.add(Habit(title = title, description = desc))
-                adapter.refresh(repo.all()); updateEmpty()
-            }.show()
+        // 📦 Quick setup for new users
+        if (repo.all().isEmpty()) {
+            showQuickSetupDialog()
         }
 
         updateEmpty()
@@ -72,5 +84,36 @@ class HabitsFragment : Fragment() {
         binding.empty.isVisible = adapter.current.isEmpty()
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+    private fun showQuickSetupDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Quick Setup")
+            .setMessage("Would you like to add some default wellness habits to get started?")
+            .setPositiveButton("Add Water Habits") { _, _ ->
+                addDefaultWaterHabits()
+            }
+            .setNeutralButton("Add All Habits") { _, _ ->
+                addAllDefaultHabits()
+            }
+            .setNegativeButton("Skip", null)
+            .show()
+    }
+
+    private fun addDefaultWaterHabits() {
+        val defaults = DefaultHabits.getDefaultWaterHabits()
+        defaults.forEach { repo.add(it) }
+        adapter.refresh(repo.all())
+        updateEmpty()
+    }
+
+    private fun addAllDefaultHabits() {
+        val all = DefaultHabits.getDefaultWaterHabits() + DefaultHabits.getDefaultWellnessHabits()
+        all.forEach { repo.add(it) }
+        adapter.refresh(repo.all())
+        updateEmpty()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

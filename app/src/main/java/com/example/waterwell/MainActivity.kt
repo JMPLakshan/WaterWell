@@ -4,10 +4,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.waterwell.databinding.ActivityMainBinding
+import com.example.waterwell.utils.PreferenceManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,5 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host)
         binding.bottomNav.setupWithNavController(navController)
+        
+        // Debug: Add long press on bottom nav to reset onboarding
+        binding.bottomNav.setOnLongClickListener {
+            resetOnboardingForTesting()
+            true
+        }
+    }
+    
+    private fun resetOnboardingForTesting() {
+        val preferenceManager = PreferenceManager(this)
+        preferenceManager.resetOnboarding()
+        Toast.makeText(this, "Onboarding reset! Restart app to see onboarding screens.", Toast.LENGTH_LONG).show()
     }
 }

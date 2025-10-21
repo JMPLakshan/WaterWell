@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:padding="16dp"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/etTitle"
-        android:hint="Habit title"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/etDesc"
-        android:hint="Description (optional)"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:inputType="textMultiLine" android:minLines="2" android:layout_marginTop="8dp"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/etTitle"
+            android:hint="Habit title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etDesc"
+            android:hint="Description (optional)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etAmount"
+            android:hint="Amount (e.g. 250ml, 1 glass)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etTime"
+            android:hint="Time (e.g. 8:00 AM)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:inputType="time"/>
+
+    </LinearLayout>
+</ScrollView>

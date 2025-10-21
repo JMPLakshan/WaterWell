@@ -30,6 +30,11 @@
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
 
+        <activity
+            android:name=".ui.onboarding.SimpleOnboardingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
+
         <!-- WorkManager needs default initialization; no extra components here -->
     </application>
 </manifest>

@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.example.waterwell.MainActivity
 import com.example.waterwell.R
-import com.example.waterwell.ui.onboarding.OnboardingActivity
+import com.example.waterwell.ui.onboarding.SimpleOnboardingActivity
 import com.example.waterwell.utils.PreferenceManager
 
 class SplashActivity : AppCompatActivity() {
@@ -30,15 +30,18 @@ class SplashActivity : AppCompatActivity() {
         
         // Check if user has completed onboarding
         val preferenceManager = PreferenceManager(this)
-        val isFirstLaunch = preferenceManager.isFirstLaunch()
+        val hasCompletedOnboarding = preferenceManager.isOnboardingCompleted()
+        
+        // Debug logging
+        android.util.Log.d("SplashActivity", "Has completed onboarding: $hasCompletedOnboarding")
         
         // Delay navigation
         Handler(Looper.getMainLooper()).postDelayed({
-            if (isFirstLaunch) {
-                // First time - show onboarding
-                startActivity(Intent(this, OnboardingActivity::class.java))
+            if (!hasCompletedOnboarding) {
+                // Show onboarding if not completed
+                startActivity(Intent(this, SimpleOnboardingActivity::class.java))
             } else {
-                // Returning user - go to main app
+                // Go to main app if onboarding completed
                 startActivity(Intent(this, MainActivity::class.java))
             }
             finish()
