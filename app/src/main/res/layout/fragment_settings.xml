@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical" android:padding="16dp"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <TextView android:text="Hydration reminder interval (minutes) — minimum 15"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etMinutes"
+            android:inputType="number"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" android:text="120"/>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:text="Save & Schedule"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <View android:layout_width="match_parent" android:layout_height="16dp"/>
+
+        <Button
+            android:id="@+id/btnShare"
+            android:text="Share weekly summary"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>

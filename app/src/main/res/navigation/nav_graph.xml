@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/habitsFragment">
+
+    <fragment
+        android:id="@+id/habitsFragment"
+        android:name="com.example.waterwell.ui.habits.HabitsFragment"
+        android:label="Habits">
+        <action
+            android:id="@+id/action_habitsFragment_to_editHabitFragment"
+            app:destination="@id/editHabitFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/editHabitFragment"
+        android:name="com.example.waterwell.ui.habits.EditHabitFragment"
+        android:label="Edit Habit"
+        android:enterAnim="@android:anim/fade_in"
+        android:exitAnim="@android:anim/fade_out" />
+
+    <fragment
+        android:id="@+id/moodFragment"
+        android:name="com.example.waterwell.ui.mood.MoodFragment"
+        android:label="Mood">
+        <action
+            android:id="@+id/action_moodFragment_to_addMoodFragment"
+            app:destination="@id/addMoodFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/addMoodFragment"
+        android:name="com.example.waterwell.ui.mood.AddMoodFragment"
+        android:label="Add Mood"
+        android:enterAnim="@android:anim/slide_in_left"
+        android:exitAnim="@android:anim/slide_out_right" />
+
+    <fragment
+        android:id="@+id/moodChartFragment"
+        android:name="com.example.waterwell.ui.charts.MoodChartFragment"
+        android:label="Weekly Trend" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.waterwell.ui.settings.SettingsFragment"
+        android:label="Settings" />
+</navigation>

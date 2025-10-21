@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/habitsFragment" android:title="Habits" android:icon="@drawable/ic_checklist"/>
+    <item android:id="@+id/moodFragment" android:title="Mood" android:icon="@drawable/ic_emoji"/>
+    <item android:id="@+id/moodChartFragment" android:title="Chart" android:icon="@drawable/ic_chart"/>
+    <item android:id="@+id/settingsFragment" android:title="Settings" android:icon="@drawable/ic_settings"/>
+</menu>
