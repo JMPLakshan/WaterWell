@@ -11,17 +11,14 @@
         android:name="com.example.waterwell.ui.habits.HabitsFragment"
         android:label="Habits"
         tools:layout="@layout/fragment_habits">
-
         <action
             android:id="@+id/action_habitsFragment_to_editHabitFragment"
             app:destination="@id/editHabitFragment" />
-
         <action
             android:id="@+id/action_habitsFragment_to_chartFragment"
             app:destination="@id/chartFragment" />
     </fragment>
 
-    <!-- ✏️ Edit Habit -->
     <fragment
         android:id="@+id/editHabitFragment"
         android:name="com.example.waterwell.ui.habits.EditHabitFragment"
@@ -34,21 +31,14 @@
         android:name="com.example.waterwell.ui.mood.MoodFragment"
         android:label="Mood"
         tools:layout="@layout/fragment_mood">
-
         <action
             android:id="@+id/action_moodFragment_to_addMoodFragment"
             app:destination="@id/addMoodFragment" />
-
         <action
             android:id="@+id/action_moodFragment_to_moodChartFragment"
             app:destination="@id/moodChartFragment" />
-
-        <action
-            android:id="@+id/action_moodFragment_to_hydrationReminderFragment"
-            app:destination="@id/hydrationReminderFragment" />
     </fragment>
 
-    <!-- ➕ Add Mood -->
     <fragment
         android:id="@+id/addMoodFragment"
         android:name="com.example.waterwell.ui.mood.AddMoodFragment"
@@ -62,7 +52,7 @@
         android:label="Weekly Trend"
         tools:layout="@layout/fragment_mood_chart" />
 
-    <!-- 📊 Habit Chart -->
+    <!-- 📊 Habit Completion Chart -->
     <fragment
         android:id="@+id/chartFragment"
         android:name="com.example.waterwell.ui.charts.ChartFragment"
@@ -75,12 +65,4 @@
         android:name="com.example.waterwell.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
-
-    <!-- 💧 Hydration Reminder -->
-    <fragment
-        android:id="@+id/hydrationReminderFragment"
-        android:name="com.example.waterwell.ui.hydration.HydrationReminderFragment"
-        android:label="Hydration Reminder"
-        tools:layout="@layout/fragment_hydration_reminder" />
-
 </navigation>

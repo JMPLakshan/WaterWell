@@ -1,145 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black"
-    android:padding="16dp"
-    tools:context=".ui.mood.MoodFragment">
+    android:background="@color/black">
 
-    <!-- Header with Hydration Reminder Bell -->
-    <LinearLayout
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutMood"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingBottom="8dp">
+        app:tabIndicatorColor="@color/purple_200"
+        app:tabSelectedTextColor="@color/purple_200"
+        app:tabTextColor="@color/white" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Log your mood"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
-
-        <ImageButton
-            android:id="@+id/btnBell"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="Hydration reminder"
-            android:src="@drawable/ic_bell"
-            android:tint="@color/white" />
-    </LinearLayout>
-
-    <!-- Date / time selector -->
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chipDateTime"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Today • now"
-        android:textColor="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        app:chipBackgroundColor="@color/purple_200"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Emoji selector -->
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleMoods"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:singleSelection="true"
-        app:selectionRequired="true"
-        android:layout_marginBottom="12dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSad"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="😞"
-            android:textSize="26sp"
-            android:textColor="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNeutral"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="🙂"
-            android:textSize="26sp"
-            android:textColor="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnHappy"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="😄"
-            android:textSize="26sp"
-            android:textColor="@color/white" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <!-- Optional note -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputNoteLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Add a note (optional)"
-        android:layout_marginBottom="12dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Save -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSave"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save entry"
-        android:textAllCaps="false"
-        android:backgroundTint="@color/purple_200"
-        android:textColor="@color/white"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Divider -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/purple_200"
-        android:alpha="0.25"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Previous entries -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your entries"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:paddingBottom="6dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    <!-- Frame container for switching between List and Calendar -->
+    <FrameLayout
+        android:id="@+id/moodContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:listitem="@layout/item_mood" />
+        android:layout_weight="1">
+
+        <!-- List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+
+        <!-- Calendar -->
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:mcv_showOtherDates="all"
+            app:mcv_selectionColor="@color/purple_200"
+            app:mcv_arrowColor="@color/white"
+            app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:mcv_dateTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:mcv_tileSize="45dp" />
+
+        <!-- Recycler under calendar for habits -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerHabitsForDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddMood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_mood"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@android:color/white" />
 </LinearLayout>
