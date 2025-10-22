@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WaterWell</string>
-
-    <!-- Added for delete button -->
     <string name="delete_habit">Delete habit</string>
+    <string name="chart_title">Daily Water Habits</string>
 </resources>

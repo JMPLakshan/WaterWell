@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/background_dark"
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/txtTotalWater"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Today's Habit Completion"
-        android:textColor="@android:color/black"
+        android:text="💧 Total Water: 0 ml"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -21,7 +21,6 @@
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="#FAFAFA"/>
-
+        android:layout_height="400dp"
+        android:background="#1E1E1E"/>
 </LinearLayout>

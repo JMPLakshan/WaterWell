@@ -26,3 +26,4 @@
         android:hint="Reminder Time (e.g. 08:00 AM)"
         android:inputType="time" />
 </LinearLayout>
+
