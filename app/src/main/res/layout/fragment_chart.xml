@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
 
     <TextView
-        android:id="@+id/txtTotalWater"
-        android:layout_width="match_parent"
+        android:id="@+id/chartText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="💧 Total Water: 0 ml"
-        android:textColor="@android:color/white"
+        android:text="Chart will appear here"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="12dp"/>
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="#1E1E1E"/>
+        android:padding="8dp" />
 </LinearLayout>

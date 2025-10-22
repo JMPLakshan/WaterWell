@@ -1,125 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemHabitRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardUseCompatPadding="true"
-    android:elevation="2dp">
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/habitName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Habit Name"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/habitDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Habit description goes here"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/habitAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Amount: 0"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/habitTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time: Morning"
+        android:textSize="14sp" />
+
+    <CheckBox
+        android:id="@+id/habitCompleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Completed Today" />
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
 
-        <!-- 🔹 Top Row: Type icon + Title + Checkbox + Delete -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:text="Edit" />
 
-            <!-- Habit Type Icon -->
-            <TextView
-                android:id="@+id/tvType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📝"
-                android:textSize="20sp"
-                android:layout_marginEnd="8dp"
-                android:importantForAccessibility="no" />
-
-            <!-- Habit Title -->
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Habit Title"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="?android:textColorPrimary"
-                android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="Drink Water (Morning)" />
-
-            <!-- Habit Completed Checkbox -->
-            <CheckBox
-                android:id="@+id/cbDone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-
-            <!-- Delete Habit Button -->
-            <ImageButton
-                android:id="@+id/btnDelete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="6dp"
-                android:contentDescription="@string/delete_habit"
-                android:src="@android:drawable/ic_menu_delete"
-                android:tint="?attr/colorError"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-        </LinearLayout>
-
-        <!-- 🔹 Description -->
-        <TextView
-            android:id="@+id/tvDesc"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:paddingTop="2dp"
-            tools:text="Stay hydrated by drinking a glass of water" />
-
-        <!-- 🔹 Water Info Section -->
-        <LinearLayout
-            android:id="@+id/waterInfo"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:paddingTop="6dp">
-
-            <TextView
-                android:id="@+id/tvTarget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="💧 Amount: 250ml"
-                android:textColor="#0066CC"
-                android:textSize="14sp"
-                tools:text="💧 Amount: 300 ml" />
-
-            <TextView
-                android:id="@+id/tvReminder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⏰ 8:00 AM"
-                android:textColor="#009688"
-                android:textSize="13sp"
-                android:visibility="gone"
-                android:layout_marginTop="2dp"
-                tools:text="⏰ 8:00 AM" />
-        </LinearLayout>
-
-        <!-- 🔹 Progress Bar -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:layout_marginTop="6dp"
-            android:progress="0"
-            android:visibility="gone"
-            android:progressTint="#4CAF50"
-            android:indeterminate="false" />
+            android:text="Delete"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

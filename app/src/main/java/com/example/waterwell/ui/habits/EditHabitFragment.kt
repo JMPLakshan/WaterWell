@@ -1,79 +1,78 @@
 package com.example.waterwell.ui.habits
 
-import android.app.AlertDialog
-import android.content.Context
+import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import androidx.core.os.bundleOf
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.waterwell.data.models.Habit
 import com.example.waterwell.data.repository.HabitRepository
-import com.example.waterwell.databinding.DialogEditHabitBinding
-import kotlinx.parcelize.Parcelize
+import com.example.waterwell.databinding.FragmentEditHabitBinding
+import com.google.android.material.snackbar.Snackbar
 
 class EditHabitFragment : Fragment() {
-    companion object {
-        private const val KEY_HABIT = "habit_arg"
 
-        fun newDialog(ctx: Context, onSave: (title: String, desc: String?, amount: String?, time: String?) -> Unit): AlertDialog {
-            val b = DialogEditHabitBinding.inflate(android.view.LayoutInflater.from(ctx))
-            return AlertDialog.Builder(ctx)
-                .setTitle("Add Habit")
-                .setView(b.root)
-                .setPositiveButton("Save") { _, _ ->
-                    onSave(
-                        b.etTitle.text.toString().trim(),
-                        b.etDesc.text.toString().trim().ifEmpty { null },
-                        b.etAmount.text.toString().trim().ifEmpty { null },
-                        b.etTime.text.toString().trim().ifEmpty { null }
-                    )
-                }
-                .setNegativeButton("Cancel", null)
-                .create()
+    private var _binding: FragmentEditHabitBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var repo: HabitRepository
+    private var currentHabit: Habit? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEditHabitBinding.inflate(inflater, container, false)
+        repo = HabitRepository(requireContext())
+
+        // Safe Parcelable retrieval
+        currentHabit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("habit", Habit::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getParcelable("habit")
         }
 
-        fun bundleFor(habit: Habit) = bundleOf(KEY_HABIT to HabitArg.from(habit))
+        setupUI()
+        setupSaveButton()
+
+        return binding.root
     }
 
-    @Parcelize
-    data class HabitArg(
-        val id: String,
-        val title: String,
-        val description: String?,
-        val amount: String?,
-        val time: String?,
-        val done: Boolean
-    ) : Parcelable {
-        fun toHabit() = Habit(id = id, title = title, description = description, amount = amount, time = time, isCompletedToday = done)
-        companion object { fun from(h: Habit) = HabitArg(h.id, h.title, h.description, h.amount, h.time, h.isCompletedToday) }
+    private fun setupUI() {
+        currentHabit?.let { habit ->
+            binding.editHabitName.setText(habit.name)
+            binding.editHabitDescription.setText(habit.description)
+        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val arg = requireArguments().getParcelable<HabitArg>(KEY_HABIT) ?: return
-        val repo = HabitRepository(requireContext())
-        val ctx = requireContext()
-        val b = DialogEditHabitBinding.inflate(android.view.LayoutInflater.from(ctx))
-        b.etTitle.setText(arg.title)
-        b.etDesc.setText(arg.description ?: "")
-        b.etAmount.setText(arg.amount ?: "")
-        b.etTime.setText(arg.time ?: "")
+    private fun setupSaveButton() {
+        binding.btnSave.setOnClickListener {
+            val name = binding.editHabitName.text.toString().trim()
+            val description = binding.editHabitDescription.text.toString().trim()
 
-        AlertDialog.Builder(ctx)
-            .setTitle("Edit Habit")
-            .setView(b.root)
-            .setPositiveButton("Update") { _, _ ->
-                val updated = arg.toHabit().copy(
-                    title = b.etTitle.text.toString().trim(),
-                    description = b.etDesc.text.toString().trim().ifEmpty { null },
-                    amount = b.etAmount.text.toString().trim().ifEmpty { null },
-                    time = b.etTime.text.toString().trim().ifEmpty { null }
-                )
-                repo.update(updated)
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+            if (name.isEmpty()) {
+                Snackbar.make(binding.rootLayout, "Please enter a habit name", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNegativeButton("Cancel") { _, _ -> requireActivity().onBackPressedDispatcher.onBackPressed() }
-            .setOnDismissListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
-            .show()
+
+            val updatedHabit = currentHabit?.copy(
+                name = name,
+                description = description
+            )
+
+            if (updatedHabit != null) {
+                repo.update(updatedHabit)
+                Snackbar.make(binding.rootLayout, "Habit updated successfully", Snackbar.LENGTH_SHORT).show()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            } else {
+                Snackbar.make(binding.rootLayout, "Error updating habit", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

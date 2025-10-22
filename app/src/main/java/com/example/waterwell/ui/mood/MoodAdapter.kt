@@ -1,28 +1,60 @@
 package com.example.waterwell.ui.mood
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.waterwell.data.models.MoodEntry
-import com.example.waterwell.databinding.ItemMoodBinding
-import com.example.waterwell.util.DateUtils
+import com.example.waterwell.R
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MoodAdapter(private var items: MutableList<MoodEntry>) :
-    RecyclerView.Adapter<MoodAdapter.VH>() {
+enum class MoodType { SAD, NEUTRAL, HAPPY }
 
-    class VH(val b: ItemMoodBinding) : RecyclerView.ViewHolder(b.root)
+data class LocalMoodEntry(
+    val timestampMillis: Long,
+    val mood: MoodType,
+    val note: String?
+)
+
+class MoodAdapter : ListAdapter<LocalMoodEntry, MoodAdapter.VH>(Diff()) {
+
+    class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvEmoji: TextView = itemView.findViewById(R.id.tvEmoji)
+        val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
+        val tvNote: TextView = itemView.findViewById(R.id.tvNote)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val b = ItemMoodBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VH(b)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_mood, parent, false)
+        return VH(v)
     }
 
-    override fun onBindViewHolder(h: VH, position: Int) {
-        val item = items[position]
-        h.b.tvEmoji.text = item.emoji
-        h.b.tvTime.text = DateUtils.display(item.timestamp)
-        h.b.tvNote.text = item.note ?: ""
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val item = getItem(position)
+        holder.tvEmoji.text = when (item.mood) {
+            MoodType.SAD -> "😞"
+            MoodType.NEUTRAL -> "🙂"
+            MoodType.HAPPY -> "😄"
+        }
+        val fmt = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
+        holder.tvDateTime.text = fmt.format(Date(item.timestampMillis))
+
+        if (item.note.isNullOrBlank()) {
+            holder.tvNote.visibility = View.GONE
+        } else {
+            holder.tvNote.visibility = View.VISIBLE
+            holder.tvNote.text = item.note
+        }
     }
 
-    override fun getItemCount() = items.size
+    private class Diff : DiffUtil.ItemCallback<LocalMoodEntry>() {
+        override fun areItemsTheSame(oldItem: LocalMoodEntry, newItem: LocalMoodEntry) =
+            oldItem.timestampMillis == newItem.timestampMillis && oldItem.mood == newItem.mood
+
+        override fun areContentsTheSame(oldItem: LocalMoodEntry, newItem: LocalMoodEntry) =
+            oldItem == newItem
+    }
 }

@@ -4,136 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.waterwell.data.Prefs
 import com.example.waterwell.data.models.Habit
 import com.example.waterwell.data.repository.HabitRepository
 import com.example.waterwell.databinding.FragmentHabitsBinding
-import com.example.waterwell.ui.shared.HabitSharedViewModel
-import com.example.waterwell.util.DateUtils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 
 class HabitsFragment : Fragment() {
 
     private var _binding: FragmentHabitsBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var repo: HabitRepository
     private lateinit var adapter: HabitAdapter
-    private val sharedViewModel: HabitSharedViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHabitsBinding.inflate(inflater, container, false)
         repo = HabitRepository(requireContext())
 
-        // Reset daily completion
-        val prefs = Prefs(requireContext())
-        val today = DateUtils.todayKey()
-        val last = prefs.getLastResetDay()
-        if (last != today) {
-            // append yesterday stats to history before resetting
-            if (last != null) {
-                val completed = repo.all().count { it.isCompletedToday }
-                val total = repo.all().size
-                val history = prefs.loadHabitHistory()
-                history.add(Prefs.DayStat(dayKey = last, completed = completed, total = total))
-                prefs.saveHabitHistory(history)
-            }
-            repo.resetTodayFlags()
-            prefs.setLastResetDay(today)
+        setupRecyclerView()
+        loadHabits()
+
+        binding.fabAddHabit.setOnClickListener {
+            CreateHabitDialog().show(parentFragmentManager, "createHabit")
         }
-
-        setupRecycler()
-        setupFab()
-        updateEmpty()
-
-        if (repo.all().isEmpty()) showQuickSetupDialog()
-        sharedViewModel.updateHabits(repo.all())
 
         return binding.root
     }
 
-    private fun setupRecycler() {
+    private fun setupRecyclerView() {
         adapter = HabitAdapter(
-            repo.all(),
-            onToggle = { id, done ->
-                repo.toggle(id, done)
-                adapter.refresh(repo.all())
-                sharedViewModel.updateHabits(repo.all()) // update chart
-                updateEmpty()
-            },
-            onEdit = { habit ->
-                EditHabitDialog.show(requireContext(), habit) { updated ->
-                    repo.update(updated)
-                    adapter.refresh(repo.all())
-                    sharedViewModel.updateHabits(repo.all()) // update chart
-                    updateEmpty()
-                }
-            },
-            onDelete = { habit ->
-                repo.remove(habit.id)
-                adapter.refresh(repo.all())
-                sharedViewModel.updateHabits(repo.all()) // update chart
-                updateEmpty()
-                Snackbar.make(binding.root, "Habit deleted", Snackbar.LENGTH_LONG)
-                    .setAction("Undo") {
-                        repo.add(habit)
-                        adapter.refresh(repo.all())
-                        sharedViewModel.updateHabits(repo.all())
-                        updateEmpty()
-                    }.show()
+            habits = mutableListOf(),
+            onEditClick = { habit -> EditHabitDialog(habit).show(parentFragmentManager, "editHabit") },
+            onDeleteClick = { habit ->
+                DeleteHabitDialog(habit).show(parentFragmentManager, "deleteHabit")
             }
         )
-
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-        binding.recycler.adapter = adapter
+        binding.recyclerViewHabits.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewHabits.adapter = adapter
     }
 
-    private fun setupFab() {
-        binding.fabAdd.setOnClickListener {
-            CreateHabitDialog.show(requireContext()) { newHabit ->
-                repo.add(newHabit)
-                adapter.refresh(repo.all())
-                sharedViewModel.updateHabits(repo.all()) // update chart
-                updateEmpty()
-                Snackbar.make(binding.root, "Habit added", Snackbar.LENGTH_SHORT).show()
-            }
-        }
+    private fun loadHabits() {
+        val habits = repo.getAll()
+        adapter.updateData(habits)
     }
 
-    private fun updateEmpty() {
-        binding.empty.isVisible = adapter.current.isEmpty()
-    }
-
-    private fun showQuickSetupDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Quick Setup")
-            .setMessage("Would you like to add some default wellness habits?")
-            .setPositiveButton("Add Water Habits") { _, _ -> addDefaultWaterHabits() }
-            .setNeutralButton("Add All Habits") { _, _ -> addAllDefaultHabits() }
-            .setNegativeButton("Skip", null)
-            .show()
-    }
-
-    private fun addDefaultWaterHabits() {
-        DefaultHabits.getDefaultWaterHabits().forEach { repo.add(it) }
-        adapter.refresh(repo.all())
-        sharedViewModel.updateHabits(repo.all())
-        updateEmpty()
-    }
-
-    private fun addAllDefaultHabits() {
-        val all = DefaultHabits.getDefaultWaterHabits() + DefaultHabits.getDefaultWellnessHabits()
-        all.forEach { repo.add(it) }
-        adapter.refresh(repo.all())
-        sharedViewModel.updateHabits(repo.all())
-        updateEmpty()
+    override fun onResume() {
+        super.onResume()
+        loadHabits()
     }
 
     override fun onDestroyView() {

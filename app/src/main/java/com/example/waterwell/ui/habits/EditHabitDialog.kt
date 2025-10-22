@@ -1,39 +1,69 @@
 package com.example.waterwell.ui.habits
 
-import android.app.AlertDialog
-import android.content.Context
+import android.app.Dialog
+import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.example.waterwell.data.models.Habit
+import com.example.waterwell.data.repository.HabitRepository
 import com.example.waterwell.databinding.DialogEditHabitBinding
+import com.google.android.material.snackbar.Snackbar
 
-/**
- * Dialog for editing an existing habit.
- */
-object EditHabitDialog {
+class EditHabitDialog(private val habit: Habit) : DialogFragment() {
 
-    fun show(context: Context, habit: Habit, onUpdate: (Habit) -> Unit) {
-        val b = DialogEditHabitBinding.inflate(LayoutInflater.from(context))
+    private var _binding: DialogEditHabitBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var repo: HabitRepository
 
-        // Pre-fill existing data
-        b.etTitle.setText(habit.title)
-        b.etDesc.setText(habit.description ?: "")
-        b.etAmount.setText(habit.amount ?: "")
-        b.etTime.setText(habit.time ?: "")
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        _binding = DialogEditHabitBinding.inflate(LayoutInflater.from(context))
+        repo = HabitRepository(requireContext())
 
-        AlertDialog.Builder(context)
+        // Populate fields with the existing habit data
+        binding.editHabitName.setText(habit.name)
+        binding.editHabitDescription.setText(habit.description)
+        binding.editHabitAmount.setText(habit.amount.toString())
+        binding.editHabitTime.setText(habit.time)
+
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(binding.root)
             .setTitle("Edit Habit")
-            .setView(b.root)
-            .setPositiveButton("Update") { _, _ ->
-                val updated = habit.copy(
-                    title = b.etTitle.text.toString().trim(),
-                    description = b.etDesc.text.toString().trim().ifEmpty { null },
-                    amount = b.etAmount.text.toString().trim().ifEmpty { null },
-                    time = b.etTime.text.toString().trim().ifEmpty { null }
-                )
-                onUpdate(updated)
+            .setPositiveButton("Save") { _, _ ->
+                updateHabit()
             }
             .setNegativeButton("Cancel", null)
-            .show()
+
+        return builder.create()
+    }
+
+    private fun updateHabit() {
+        val name = binding.editHabitName.text.toString().trim()
+        val description = binding.editHabitDescription.text.toString().trim()
+        val amountText = binding.editHabitAmount.text.toString().trim()
+        val time = binding.editHabitTime.text.toString().trim()
+
+        if (name.isEmpty()) {
+            Snackbar.make(binding.root, "Please enter a name", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        val amount = amountText.toIntOrNull() ?: 0
+
+        val updated = habit.copy(
+            name = name,
+            description = description,
+            amount = amount,
+            time = time
+        )
+
+        repo.update(updated)
+        Snackbar.make(binding.root, "Habit updated successfully", Snackbar.LENGTH_SHORT).show()
+        dismiss()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
-

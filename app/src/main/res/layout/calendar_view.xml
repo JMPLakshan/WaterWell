@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Month Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageButton
+            android:id="@+id/btnPrevMonth"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_previous"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous month" />
+
+        <TextView
+            android:id="@+id/tvMonthYear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="December 2024"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="?android:textColorPrimary" />
+
+        <ImageButton
+            android:id="@+id/btnNextMonth"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_next"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next month" />
+
+    </LinearLayout>
+
+    <!-- Calendar Grid -->
+    <GridLayout
+        android:id="@+id/calendarGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:rowCount="6"
+        android:layout_marginBottom="16dp">
+
+        <!-- Day headers (Sun, Mon, Tue, etc.) -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Sun"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Mon"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Tue"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Wed"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Thu"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Fri"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Sat"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="?android:textColorSecondary" />
+
+    </GridLayout>
+
+    <!-- Selected Day Info -->
+    <LinearLayout
+        android:id="@+id/selectedDayInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?attr/colorSurfaceVariant"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvSelectedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected: December 15, 2024"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary" />
+
+        <TextView
+            android:id="@+id/tvSelectedMood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😄 3/4 habits completed"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:textColor="?android:textColorSecondary" />
+
+        <Button
+            android:id="@+id/btnViewHabits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Habits for this day"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

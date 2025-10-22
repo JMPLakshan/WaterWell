@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/background_dark">
+
+    <TextView
+        android:id="@+id/titleEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Habit"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editHabitName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Habit name"
+        android:textColor="@android:color/white"
+        android:textColorHint="#AAA"
+        android:inputType="textCapSentences"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/editHabitDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Habit description"
+        android:textColor="@android:color/white"
+        android:textColorHint="#AAA"
+        android:inputType="textCapSentences|textMultiLine"
+        android:minLines="3"
+        android:gravity="top"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Habit"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white" />
+
+
+
+</LinearLayout>

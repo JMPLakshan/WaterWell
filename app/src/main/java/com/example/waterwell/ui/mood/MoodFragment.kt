@@ -1,84 +1,139 @@
 package com.example.waterwell.ui.mood
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.tabs.TabLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.waterwell.R
-import com.example.waterwell.data.repository.MoodRepository
-import com.example.waterwell.data.repository.HabitRepository
-import com.example.waterwell.databinding.FragmentMoodBinding
-import com.example.waterwell.data.Prefs
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.chip.Chip
+import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MoodFragment : Fragment() {
 
-    private var _b: FragmentMoodBinding? = null
-    private val b get() = _b!!
-    private lateinit var repo: MoodRepository
-    private lateinit var adapter: MoodDaySummaryAdapter
+    private lateinit var chipDateTime: Chip
+    private lateinit var toggleMoods: MaterialButtonToggleGroup
+    private lateinit var btnSad: MaterialButton
+    private lateinit var btnNeutral: MaterialButton
+    private lateinit var btnHappy: MaterialButton
+    private lateinit var inputNote: TextInputEditText
+    private lateinit var btnSave: MaterialButton
+    private lateinit var recycler: RecyclerView
+    private lateinit var btnBell: ImageButton
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _b = FragmentMoodBinding.inflate(inflater, container, false)
-        repo = MoodRepository(requireContext())
-        adapter = MoodDaySummaryAdapter(buildSummaries())
-        b.recycler.layoutManager = LinearLayoutManager(requireContext())
-        b.recycler.adapter = adapter
+    private val calendar: Calendar = Calendar.getInstance()
+    private val adapter = MoodAdapter()
+    private val entries = mutableListOf<LocalMoodEntry>()
 
-        // Tabs: List and Calendar (calendar placeholder for now)
-        b.tabLayout.addTab(b.tabLayout.newTab().setText(com.example.waterwell.R.string.mood_tab_list))
-        b.tabLayout.addTab(b.tabLayout.newTab().setText(com.example.waterwell.R.string.mood_tab_calendar))
-        b.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                when (tab.position) {
-                    0 -> { // List
-                        b.recycler.visibility = View.VISIBLE
-                        // calendar view not implemented; keep container simple
-                    }
-                    1 -> {
-                        // Simple placeholder until a calendar view is added
-                        b.recycler.visibility = View.VISIBLE
-                    }
-                }
-            }
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_mood, container, false)
 
-        b.fabAddMood.setOnClickListener {
-            findNavController().navigate(R.id.action_moodFragment_to_addMoodFragment)
-        }
-        return b.root
+        chipDateTime = view.findViewById(R.id.chipDateTime)
+        toggleMoods = view.findViewById(R.id.toggleMoods)
+        btnSad = view.findViewById(R.id.btnSad)
+        btnNeutral = view.findViewById(R.id.btnNeutral)
+        btnHappy = view.findViewById(R.id.btnHappy)
+        inputNote = view.findViewById(R.id.inputNote)
+        btnSave = view.findViewById(R.id.btnSave)
+        recycler = view.findViewById(R.id.recycler)
+        btnBell = view.findViewById(R.id.btnBell)
+
+        setupDateTime()
+        setupEmojiToggle()
+        setupRecycler()
+        setupSave()
+        setupBellButton()
+
+        return view
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _b = null }
+    private fun setupDateTime() {
+        updateChipText()
+        chipDateTime.setOnClickListener {
+            val y = calendar.get(Calendar.YEAR)
+            val m = calendar.get(Calendar.MONTH)
+            val d = calendar.get(Calendar.DAY_OF_MONTH)
+            DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                val hr = calendar.get(Calendar.HOUR_OF_DAY)
+                val min = calendar.get(Calendar.MINUTE)
+                TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    calendar.set(Calendar.MINUTE, minute)
+                    updateChipText()
+                }, hr, min, false).show()
+            }, y, m, d).show()
+        }
+    }
 
-    private fun buildSummaries(): List<MoodDaySummary> {
-        val prefs = Prefs(requireContext())
-        val habitRepo = HabitRepository(requireContext())
-        val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-        val results = mutableListOf<MoodDaySummary>()
+    private fun updateChipText() {
+        val fmt = SimpleDateFormat("EEE, MMM d • h:mm a", Locale.getDefault())
+        chipDateTime.text = fmt.format(Date(calendar.timeInMillis))
+    }
 
-        // include history (most recent first)
-        val history = prefs.loadHabitHistory().asReversed()
-        history.forEach { day ->
-            val time = Calendar.getInstance()
-            // parse dayKey (yyyy-MM-dd) to label
-            val parts = day.dayKey.split("-")
-            if (parts.size == 3) {
-                val cal = Calendar.getInstance()
-                cal.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt(), 0, 0, 0)
-                results.add(MoodDaySummary(sdf.format(cal.time), day.completed, day.total))
-            }
+    private fun setupEmojiToggle() {
+        toggleMoods.check(btnNeutral.id)
+    }
+
+    private fun selectedMood(): MoodType? =
+        when (toggleMoods.checkedButtonId) {
+            btnSad.id -> MoodType.SAD
+            btnNeutral.id -> MoodType.NEUTRAL
+            btnHappy.id -> MoodType.HAPPY
+            else -> null
         }
 
-        // add today on top
-        val completedToday = habitRepo.all().count { it.isCompletedToday }
-        val total = habitRepo.all().size
-        results.add(0, MoodDaySummary("Today", completedToday, total))
-        return results
+    private fun setupRecycler() {
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        recycler.adapter = adapter
+        adapter.submitList(entries.toList())
+    }
+
+    private fun setupSave() {
+        btnSave.setOnClickListener {
+            val mood = selectedMood()
+            if (mood == null) {
+                Toast.makeText(requireContext(), "Pick an emoji", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val note = inputNote.text?.toString()?.trim().orEmpty()
+            val entry = LocalMoodEntry(
+                timestampMillis = calendar.timeInMillis,
+                mood = mood,
+                note = note.ifBlank { null }
+            )
+            entries.add(0, entry)
+            adapter.submitList(entries.toList())
+            inputNote.setText("")
+            Toast.makeText(requireContext(), "Mood saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupBellButton() {
+        btnBell.setOnClickListener {
+            try {
+                findNavController().navigate(R.id.action_moodFragment_to_hydrationReminderFragment)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Unable to open reminders", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

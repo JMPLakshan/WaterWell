@@ -1,6 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Android 13+ notifications permission -->
+    <!-- Android 13+ notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -9,8 +11,11 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="WaterWell"
+        android:name=".WaterWellApp"
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Splash is the launcher -->
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
@@ -21,20 +26,35 @@
             </intent-filter>
         </activity>
 
+        <!-- MainActivity (no intent-filter needed) -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
 
+        <!-- Onboarding screens -->
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
-
         <activity
             android:name=".ui.onboarding.SimpleOnboardingActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
 
-        <!-- WorkManager needs default initialization; no extra components here -->
+        <!-- WorkManager (do not modify) -->
+        <service
+            android:name="androidx.work.impl.background.systemjob.SystemJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:exported="false"
+            tools:ignore="ExportedService" />
+        <receiver
+            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
     </application>
 </manifest>

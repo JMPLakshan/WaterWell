@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/habitsFragment" android:title="Habits" android:icon="@drawable/ic_checklist"/>
-    <item android:id="@+id/moodFragment" android:title="Mood" android:icon="@drawable/ic_emoji"/>
-    <item android:id="@+id/moodChartFragment" android:title="Chart" android:icon="@drawable/ic_chart"/>
-    <item android:id="@+id/settingsFragment" android:title="Settings" android:icon="@drawable/ic_settings"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 💧 Habits -->
+    <item
+        android:id="@+id/habitsFragment"
+        android:icon="@drawable/ic_habit"
+        android:title="@string/nav_habits"
+        app:showAsAction="ifRoom" />
+
+    <!-- 😊 Mood -->
+    <item
+        android:id="@+id/moodFragment"
+        android:icon="@drawable/ic_mood"
+        android:title="@string/nav_mood"
+        app:showAsAction="ifRoom" />
+
+    <!-- ⚙️ Settings -->
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/nav_settings"
+        app:showAsAction="ifRoom" />
 </menu>

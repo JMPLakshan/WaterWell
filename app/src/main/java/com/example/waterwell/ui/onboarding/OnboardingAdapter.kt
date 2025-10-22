@@ -8,29 +8,28 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waterwell.R
 
-class OnboardingAdapter(private val items: List<OnboardingItem>) : 
+class OnboardingAdapter(private val items: List<OnboardingItem>) :
     RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>() {
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingViewHolder {
-        android.util.Log.d("OnboardingAdapter", "Creating view holder")
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_onboarding_screen, parent, false)
+            .inflate(R.layout.item_onboarding, parent, false)
         return OnboardingViewHolder(view)
     }
-    
+
     override fun onBindViewHolder(holder: OnboardingViewHolder, position: Int) {
         holder.bind(items[position])
     }
-    
+
     override fun getItemCount(): Int = items.size
-    
+
     class OnboardingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val illustration: ImageView = itemView.findViewById(R.id.illustration)
-        private val title: TextView = itemView.findViewById(R.id.title)
-        private val description: TextView = itemView.findViewById(R.id.description)
-        
+        private val illustration: ImageView = itemView.findViewById(R.id.imageOnboarding)
+        private val title: TextView = itemView.findViewById(R.id.textTitle)
+        private val description: TextView = itemView.findViewById(R.id.textDescription)
+
         fun bind(item: OnboardingItem) {
-            illustration.setImageResource(item.illustration)
+            illustration.setImageResource(item.imageResId)
             title.text = item.title
             description.text = item.description
         }

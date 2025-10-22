@@ -4,40 +4,34 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <EditText
-            android:id="@+id/etTitle"
-            android:hint="Habit title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:id="@+id/etDesc"
-            android:hint="Description (optional)"
+            android:id="@+id/editHabitName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:minLines="2"
-            android:layout_marginTop="8dp"/>
+            android:hint="Habit Name" />
 
         <EditText
-            android:id="@+id/etAmount"
-            android:hint="Amount (e.g. 250ml, 1 glass)"
+            android:id="@+id/editHabitDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:hint="Description" />
 
         <EditText
-            android:id="@+id/etTime"
-            android:hint="Time (e.g. 8:00 AM)"
+            android:id="@+id/editHabitAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:inputType="time"/>
+            android:inputType="number"
+            android:hint="Amount" />
 
+        <EditText
+            android:id="@+id/editHabitTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Time" />
     </LinearLayout>
 </ScrollView>
