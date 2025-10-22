@@ -1,40 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:background="@color/black">
 
-    <TextView
-        android:id="@+id/tvHeader"
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutMood"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Mood Journal"
-        android:textStyle="bold"
-        android:textSize="20sp"/>
+        app:tabIndicatorColor="@color/purple_200"
+        app:tabSelectedTextColor="@color/purple_200"
+        app:tabTextColor="@color/white" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+    <!-- Frame container for switching between List and Calendar -->
     <FrameLayout
         android:id="@+id/moodContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"/>
+            android:visibility="visible" />
+
+        <!-- Calendar -->
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:mcv_showOtherDates="all"
+            app:mcv_selectionColor="@color/purple_200"
+            app:mcv_arrowColor="@color/white"
+            app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:mcv_dateTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:mcv_tileSize="45dp" />
+
+        <!-- Recycler under calendar for habits -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerHabitsForDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone" />
     </FrameLayout>
 
+    <!-- FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddMood"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end" android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_emoji"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_mood"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@android:color/white" />
 </LinearLayout>
