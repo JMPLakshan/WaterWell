@@ -2,4 +2,7 @@
     <string name="app_name">WaterWell</string>
     <string name="delete_habit">Delete habit</string>
     <string name="chart_title">Daily Water Habits</string>
+    <string name="mood_journal_title">Mood Journal</string>
+    <string name="mood_tab_list">List</string>
+    <string name="mood_tab_calendar">Calendar</string>
 </resources>

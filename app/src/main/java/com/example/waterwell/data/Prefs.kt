@@ -14,6 +14,7 @@ class Prefs(ctx: Context) {
     private val KEY_MOODS = "moods_json"
     private val KEY_REMINDER_MIN = "reminder_min"
     private val KEY_LAST_RESET_DAY = "last_reset_day"
+    private val KEY_HABIT_HISTORY = "habit_history_json" // list of DayStat
 
     fun loadHabits(): MutableList<Habit> {
         val json = sp.getString(KEY_HABITS, "[]")
@@ -38,4 +39,15 @@ class Prefs(ctx: Context) {
 
     fun setLastResetDay(dayKey: String) = sp.edit().putString(KEY_LAST_RESET_DAY, dayKey).apply()
     fun getLastResetDay(): String? = sp.getString(KEY_LAST_RESET_DAY, null)
+
+    data class DayStat(val dayKey: String, val completed: Int, val total: Int)
+
+    fun loadHabitHistory(): MutableList<DayStat> {
+        val json = sp.getString(KEY_HABIT_HISTORY, "[]")
+        val type = object : TypeToken<List<DayStat>>() {}.type
+        return gson.fromJson<List<DayStat>>(json, type).toMutableList()
+    }
+    fun saveHabitHistory(list: List<DayStat>) {
+        sp.edit().putString(KEY_HABIT_HISTORY, gson.toJson(list)).apply()
+    }
 }

@@ -35,7 +35,16 @@ class HabitsFragment : Fragment() {
         // Reset daily completion
         val prefs = Prefs(requireContext())
         val today = DateUtils.todayKey()
-        if (prefs.getLastResetDay() != today) {
+        val last = prefs.getLastResetDay()
+        if (last != today) {
+            // append yesterday stats to history before resetting
+            if (last != null) {
+                val completed = repo.all().count { it.isCompletedToday }
+                val total = repo.all().size
+                val history = prefs.loadHabitHistory()
+                history.add(Prefs.DayStat(dayKey = last, completed = completed, total = total))
+                prefs.saveHabitHistory(history)
+            }
             repo.resetTodayFlags()
             prefs.setLastResetDay(today)
         }
